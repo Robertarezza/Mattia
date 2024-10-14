@@ -53,7 +53,7 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex row" id="AppCardHome">
+  <div class="d-flex row" id="AppCardHome" v-motion-pop-visible-oncet>
     <div v-for="(item, index) in store.CardHome" :key="index" class="col-lg-3 col-md-5 col-xs-6 mb-3 d-flex" @click="openCard(item)">
       <div class="card p-3 rounded element-class">
         <i :class="[item.icon, 'animated-icon']" style="font-size: xxx-large"></i>

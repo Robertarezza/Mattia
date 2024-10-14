@@ -42,6 +42,26 @@ export default {
 
       this.activateAnimation(this.currentSection);
     },
+
+     // Metodo per gestire il movimento del dito su dispositivi mobili
+     handleTouchStart(event) {
+      this.touchStartY = event.touches[0].clientY; // Salva la posizione Y iniziale
+    },
+    
+    handleTouchMove(event) {
+      const touchEndY = event.touches[0].clientY; // Posizione Y finale
+      const touchDiff = this.touchStartY - touchEndY; // Calcola la differenza
+
+      if (touchDiff > 50 && this.currentSection < this.sections.length - 1) {
+        // Scorri verso il basso
+        this.currentSection++;
+      } else if (touchDiff < -50 && this.currentSection > 0) {
+        // Scorri verso l'alto
+        this.currentSection--;
+      }
+      this.activateAnimation(this.currentSection);
+    },
+
     // Metodo per gestire il cambio di sezione dalla navbar
     handleSectionChange(sectionIndex) {
       this.currentSection = sectionIndex;
@@ -87,6 +107,8 @@ export default {
   mounted() {
     // Aggiungi un listener per rilevare lo scroll
     window.addEventListener('wheel', this.handleScroll);
+    window.addEventListener('touchstart', this.handleTouchStart);
+    window.addEventListener('touchmove', this.handleTouchMove);
 
     // Attivare l'animazione iniziale per Intro
     this.activateAnimation(0);
@@ -103,6 +125,8 @@ export default {
   beforeUnmount() {
     // Rimuovi il listener dello scroll quando il componente viene distrutto
     window.removeEventListener('wheel', this.handleScroll);
+    window.removeEventListener('touchstart', this.handleTouchStart);
+    window.removeEventListener('touchmove', this.handleTouchMove);
   },
 };
 </script>
@@ -196,12 +220,17 @@ main {
   overflow: hidden;
 }
 
-@media (min-width: 350px) {
+@media (max-width: 350px) {
   main {
  
   overflow:auto;
 }
 
+@media (max-width: 425px) {
+  main {
+  overflow:auto;
+}
+}
   
  }
  @media (max-width: 991px) { /* Per schermi mobili */
@@ -210,11 +239,7 @@ main {
     overflow: auto; /* Permette lo scorrimento */
   }
 }
-@media (min-width: 425px) {
-  main {
-  overflow:auto;
-}
-}
+
 
 html {
   scroll-behavior: smooth;
