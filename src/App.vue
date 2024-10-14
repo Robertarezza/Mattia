@@ -25,7 +25,7 @@ export default {
       currentSection: 0, // Indica quale sezione è attualmente visibile
       sections: ['introEl', 'appCardHomeEl', 'contactFormEl'], // Elenco delle sezioni
       touchStartY: 0, // Per memorizzare la posizione iniziale del tocco
-      touchThreshold: 200, // Soglia di scorrimento per cambiare sezione
+      touchThreshold: 100, // Soglia di scorrimento per cambiare sezione
 
       loading: true, // Stato di caricamento iniziale
       isVisible: true, // Stato di visibilità della loading page
