@@ -26,9 +26,9 @@ export default {
       sections: ['introEl', 'appCardHomeEl', 'contactFormEl'], // Elenco delle sezioni
 
       touchStartY: 0, // Per memorizzare la posizione iniziale del tocco
-      touchThreshold: 100, // Soglia di scorrimento per cambiare sezione
+      touchThreshold: 200, // Soglia di scorrimento per cambiare sezione
       isScrolling: false, // Stato per prevenire scroll multipli
-      
+
       loading: true, // Stato di caricamento iniziale
       isVisible: true, // Stato di visibilità della loading page
     };
