@@ -1,0 +1,25 @@
+{
+  "name": "mattia",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.6.0",
+    "@vueuse/core": "^11.1.0",
+    "@vueuse/motion": "^2.2.6",
+    "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
+    "bootstrap-vue-3": "^0.3.12",
+    "vue": "^3.5.10"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "sass": "^1.79.4",
+    "vite": "^5.4.8"
+  }
+}

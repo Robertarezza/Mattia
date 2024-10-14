@@ -1,0 +1,10 @@
+@import"@fortawesome/fontawesome-free/css/all.min.css";
+
+
+@media (min-width: 992px) {
+    .navbar-expand-lg .navbar-nav .nav-link {
+        padding-right: var(--bs-navbar-nav-link-padding-x);
+        padding-left: var(--bs-navbar-nav-link-padding-x);
+        color: #f15048;
+    }
+}
