@@ -26,7 +26,7 @@ export default {
       sections: ['introEl', 'appCardHomeEl', 'contactFormEl'], // Elenco delle sezioni
 
       touchStartY: 0, // Per memorizzare la posizione iniziale del tocco
-      touchThreshold: 200, // Soglia di scorrimento per cambiare sezione
+      touchThreshold: 0, // Soglia di scorrimento per cambiare sezione
       isScrolling: false, // Stato per prevenire scroll multipli
 
       loading: true, // Stato di caricamento iniziale
@@ -120,6 +120,10 @@ export default {
   },
 
   mounted() {
+
+    // Calcola la soglia dinamica in base all'altezza della finestra
+    this.touchThreshold = window.innerHeight * 0.2; // 20% dell'altezza della finestra
+    
     // Aggiungi un listener per rilevare lo scroll
     window.addEventListener('wheel', this.handleScroll);
     window.addEventListener('touchstart', this.handleTouchStart);
