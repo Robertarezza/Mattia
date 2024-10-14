@@ -179,7 +179,19 @@ h1 {
 
   
 }
+ }
+@media (max-width: 460px) {
+    h1 {
+     
+      font-size: 2rem;
+    }
 
+    .intro-text {
+ 
+  justify-content: space-evenly ;
+
+  
+}
 .animated-image2{
   max-width: 40%;
   top: 350px;

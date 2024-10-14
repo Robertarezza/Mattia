@@ -24,6 +24,8 @@ export default {
       contactFormEl: ref(null),
       currentSection: 0, // Indica quale sezione è attualmente visibile
       sections: ['introEl', 'appCardHomeEl', 'contactFormEl'], // Elenco delle sezioni
+      touchStartY: 0, // Per memorizzare la posizione iniziale del tocco
+      touchThreshold: 200, // Soglia di scorrimento per cambiare sezione
 
       loading: true, // Stato di caricamento iniziale
       isVisible: true, // Stato di visibilità della loading page
@@ -46,16 +48,20 @@ export default {
      // Metodo per gestire il movimento del dito su dispositivi mobili
      handleTouchStart(event) {
       this.touchStartY = event.touches[0].clientY; // Salva la posizione Y iniziale
+      console.log(this.touchStartY );
+      
     },
     
     handleTouchMove(event) {
       const touchEndY = event.touches[0].clientY; // Posizione Y finale
       const touchDiff = this.touchStartY - touchEndY; // Calcola la differenza
+      console.log(touchEndY );
+      console.log(touchDiff );
 
-      if (touchDiff > 50 && this.currentSection < this.sections.length - 1) {
+      if (touchDiff >this.touchThreshold && this.currentSection < this.sections.length - 1) {
         // Scorri verso il basso
         this.currentSection++;
-      } else if (touchDiff < -50 && this.currentSection > 0) {
+      } else if (touchDiff < -this.touchThreshold && this.currentSection > 0) {
         // Scorri verso l'alto
         this.currentSection--;
       }
@@ -233,6 +239,12 @@ main {
 }
   
  }
+ @media (max-width: 460px) { /* Per schermi mobili */
+  main {
+    height: 80vh; /* Mantiene il comportamento attuale per i mobili */
+    overflow: auto; /* Permette lo scorrimento */
+  }
+}
  @media (max-width: 768px) { /* Per schermi mobili */
   main {
     height: 80vh; /* Mantiene il comportamento attuale per i mobili */
