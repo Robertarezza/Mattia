@@ -24,9 +24,11 @@ export default {
       contactFormEl: ref(null),
       currentSection: 0, // Indica quale sezione è attualmente visibile
       sections: ['introEl', 'appCardHomeEl', 'contactFormEl'], // Elenco delle sezioni
+
       touchStartY: 0, // Per memorizzare la posizione iniziale del tocco
       touchThreshold: 100, // Soglia di scorrimento per cambiare sezione
-
+      isScrolling: false, // Stato per prevenire scroll multipli
+      
       loading: true, // Stato di caricamento iniziale
       isVisible: true, // Stato di visibilità della loading page
     };
@@ -35,6 +37,11 @@ export default {
   methods: {
     // Metodo per gestire l'evento di scroll e cambiare sezione
     handleScroll(event) {
+      if (this.isScrolling) return; // Se stiamo già scrollando, esci
+
+      this.isScrolling = true; // Imposta lo stato di scrolling
+      setTimeout(() => this.isScrolling = false, 1000); // Resetta dopo 1 secondo
+
       // Verifica se lo scroll è verso il basso o verso l'alto
       if (event.deltaY > 0 && this.currentSection < this.sections.length - 1) {
         this.currentSection++;
@@ -45,26 +52,28 @@ export default {
       this.activateAnimation(this.currentSection);
     },
 
-     // Metodo per gestire il movimento del dito su dispositivi mobili
-     handleTouchStart(event) {
+    // Metodo per gestire il movimento del dito su dispositivi mobili
+    handleTouchStart(event) {
       this.touchStartY = event.touches[0].clientY; // Salva la posizione Y iniziale
-      console.log(this.touchStartY );
-      
     },
     
     handleTouchMove(event) {
+      if (this.isScrolling) return; // Se stiamo già scrollando, esci
+
       const touchEndY = event.touches[0].clientY; // Posizione Y finale
       const touchDiff = this.touchStartY - touchEndY; // Calcola la differenza
-      console.log(touchEndY );
-      console.log(touchDiff );
 
-      if (touchDiff >this.touchThreshold && this.currentSection < this.sections.length - 1) {
-        // Scorri verso il basso
+      // Verifica se lo scorrimento è oltre la soglia e cambia sezione
+      if (touchDiff > this.touchThreshold && this.currentSection < this.sections.length - 1) {
+        this.isScrolling = true; // Imposta lo stato di scrolling
+        setTimeout(() => this.isScrolling = false, 1000); // Resetta dopo 1 secondo
         this.currentSection++;
       } else if (touchDiff < -this.touchThreshold && this.currentSection > 0) {
-        // Scorri verso l'alto
+        this.isScrolling = true; // Imposta lo stato di scrolling
+        setTimeout(() => this.isScrolling = false, 1000); // Resetta dopo 1 secondo
         this.currentSection--;
       }
+
       this.activateAnimation(this.currentSection);
     },
 
@@ -136,6 +145,7 @@ export default {
   },
 };
 </script>
+
 
 
 
