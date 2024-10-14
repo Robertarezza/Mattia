@@ -5,6 +5,7 @@ import ContactForm from "./components/ContactForm.vue";
 import NavBar from "./components/NavBar.vue";
 import Intro from "./components/Intro.vue";
 import AppCardHome from "./components/AppCardHome.vue";
+import Loadingpage from './components/Loadingpage.vue'; // Importa la pagina di caricamento
 
 export default {
   name: "App",
@@ -13,6 +14,7 @@ export default {
     NavBar,
     Intro,
     AppCardHome,
+    Loadingpage,
   },
 
   data() {
@@ -22,9 +24,12 @@ export default {
       contactFormEl: ref(null),
       currentSection: 0, // Indica quale sezione è attualmente visibile
       sections: ['introEl', 'appCardHomeEl', 'contactFormEl'], // Elenco delle sezioni
+
+      loading: true, // Stato di caricamento iniziale
+      isVisible: true, // Stato di visibilità della loading page
     };
   },
-
+ 
   methods: {
     // Metodo per gestire l'evento di scroll e cambiare sezione
     handleScroll(event) {
@@ -85,12 +90,20 @@ export default {
 
     // Attivare l'animazione iniziale per Intro
     this.activateAnimation(0);
+
+    // Simula un tempo di caricamento
+    setTimeout(() => {
+      this.loading = false; // Nasconde il contenuto della loading page
+      setTimeout(() => {
+        this.isVisible = false; // Dopo la transizione, rimuovi la loading page dal DOM
+      }, 1000); // 1 secondo di transizione
+    }, 2000); // Simula un caricamento di 2 secondi
   },
 
   beforeUnmount() {
     // Rimuovi il listener dello scroll quando il componente viene distrutto
     window.removeEventListener('wheel', this.handleScroll);
-  }
+  },
 };
 </script>
 
@@ -100,7 +113,11 @@ export default {
 
 
 <template>
-  <div id="app">
+  <div>
+    <!-- Passa isVisible come prop al componente LoadingPage -->
+    <Loadingpage :isVisible="isVisible" />
+
+  <div id="app"  v-if="!loading" class="background-container">
     <header>
        <!-- Ascoltiamo l'evento 'section-changed' -->
        <NavBar @section-changed="handleSectionChange" />
@@ -131,6 +148,7 @@ export default {
       <p>&copy; 2024 My Vue.js Site</p>
     </footer>
   </div>
+  </div>
 </template>
 
 
@@ -138,6 +156,17 @@ export default {
 
 
 <style scoped lang="scss">
+
+.background-container {
+  min-height: 100vh;
+  background-image: url('../src/assets/img/sfondo53.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+}
+
 #app {
   font-family: Comic Sans MS;
   text-align: center;
