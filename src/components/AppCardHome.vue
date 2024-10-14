@@ -133,6 +133,7 @@ export default {
     #AppCardHome {
       padding-left: 68px;
       margin-top: 50px;
+      padding-bottom: 90px;
     }
 
   
@@ -141,11 +142,13 @@ export default {
     .row {
       padding-top: 100px;
     height: 80vh;
+    padding-bottom: 90px;
     }
 
     #AppCardHome {
       padding-left: 68px;
       margin-top: 50px;
+      padding-bottom: 90px;
     }
 
   
