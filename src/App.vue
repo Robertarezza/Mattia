@@ -24,11 +24,7 @@ export default {
       contactFormEl: ref(null),
       currentSection: 0, // Indica quale sezione è attualmente visibile
       sections: ['introEl', 'appCardHomeEl', 'contactFormEl'], // Elenco delle sezioni
-
-      touchStartY: 0, // Per memorizzare la posizione iniziale del tocco
-      touchThreshold: 0, // Soglia di scorrimento per cambiare sezione
       isScrolling: false, // Stato per prevenire scroll multipli
-
       loading: true, // Stato di caricamento iniziale
       isVisible: true, // Stato di visibilità della loading page
     };
@@ -46,31 +42,6 @@ export default {
       if (event.deltaY > 0 && this.currentSection < this.sections.length - 1) {
         this.currentSection++;
       } else if (event.deltaY < 0 && this.currentSection > 0) {
-        this.currentSection--;
-      }
-
-      this.activateAnimation(this.currentSection);
-    },
-
-    // Metodo per gestire il movimento del dito su dispositivi mobili
-    handleTouchStart(event) {
-      this.touchStartY = event.touches[0].clientY; // Salva la posizione Y iniziale
-    },
-    
-    handleTouchMove(event) {
-      if (this.isScrolling) return; // Se stiamo già scrollando, esci
-
-      const touchEndY = event.touches[0].clientY; // Posizione Y finale
-      const touchDiff = this.touchStartY - touchEndY; // Calcola la differenza
-
-      // Verifica se lo scorrimento è oltre la soglia e cambia sezione
-      if (touchDiff > this.touchThreshold && this.currentSection < this.sections.length - 1) {
-        this.isScrolling = true; // Imposta lo stato di scrolling
-        setTimeout(() => this.isScrolling = false, 1000); // Resetta dopo 1 secondo
-        this.currentSection++;
-      } else if (touchDiff < -this.touchThreshold && this.currentSection > 0) {
-        this.isScrolling = true; // Imposta lo stato di scrolling
-        setTimeout(() => this.isScrolling = false, 1000); // Resetta dopo 1 secondo
         this.currentSection--;
       }
 
@@ -120,14 +91,8 @@ export default {
   },
 
   mounted() {
-
-    // Calcola la soglia dinamica in base all'altezza della finestra
-    this.touchThreshold = window.innerHeight * 0.2; // 20% dell'altezza della finestra
-    
     // Aggiungi un listener per rilevare lo scroll
     window.addEventListener('wheel', this.handleScroll);
-    window.addEventListener('touchstart', this.handleTouchStart);
-    window.addEventListener('touchmove', this.handleTouchMove);
 
     // Attivare l'animazione iniziale per Intro
     this.activateAnimation(0);
@@ -144,10 +109,9 @@ export default {
   beforeUnmount() {
     // Rimuovi il listener dello scroll quando il componente viene distrutto
     window.removeEventListener('wheel', this.handleScroll);
-    window.removeEventListener('touchstart', this.handleTouchStart);
-    window.removeEventListener('touchmove', this.handleTouchMove);
   },
 };
+
 </script>
 
 
@@ -220,12 +184,10 @@ export default {
   color: #f15048;
   height: 100vh;
   overflow-x: hidden; /* Evita overflow orizzontale */
-  overflow: hidden;
 }
 
 header {
   color: #f15048;
-  //padding: 20px;
   position: sticky;
   top: 10px;
   left: 0;
@@ -237,41 +199,15 @@ main {
   margin: 20px;
   position: relative;
   height: 80vh; /* Cambiato per far spazio al footer */
-  overflow: hidden;
+  overflow: hidden; /* Permette lo scroll */
 }
 
-@media (max-width: 350px) {
-  main {
- 
-  overflow:auto;
-}
-
-@media (max-width: 425px) {
-  main {
-  overflow:auto;
-}
-}
-  
- }
- @media (max-width: 460px) { /* Per schermi mobili */
+@media (max-width: 768px) { /* Per schermi mobili */
   main {
     height: 80vh; /* Mantiene il comportamento attuale per i mobili */
-    overflow: auto; /* Permette lo scorrimento */
+    overflow: auto; /* Permette lo scroll */
   }
 }
- @media (max-width: 768px) { /* Per schermi mobili */
-  main {
-    height: 80vh; /* Mantiene il comportamento attuale per i mobili */
-    overflow: auto; /* Permette lo scorrimento */
-  }
-}
- @media (max-width: 991px) { /* Per schermi mobili */
-  main {
-    height: 80vh; /* Mantiene il comportamento attuale per i mobili */
-    overflow: auto; /* Permette lo scorrimento */
-  }
-}
-
 
 html {
   scroll-behavior: smooth;
@@ -280,10 +216,8 @@ html {
 footer {
   background-color: #35495e;
   color: white;
-  //padding: 10px;
   min-height: 10vh;
 }
-
 
 /* Definizione della transizione fade e slide */
 .fade-slide-enter-active, .fade-slide-leave-active {
