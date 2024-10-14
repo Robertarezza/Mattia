@@ -124,7 +124,20 @@ export default {
     -webkit-animation: text-shadow-pop-bottom 0.5s forwards;
   }
 
-  @media (min-width: 350px) {
+  @media (max-width: 350px) {
+    .row {
+      padding-top: 100px;
+    height: 80vh;
+    }
+
+    #AppCardHome {
+      padding-left: 68px;
+      margin-top: 50px;
+    }
+
+  
+ }
+ @media (max-width: 425px) {
     .row {
       padding-top: 100px;
     height: 80vh;

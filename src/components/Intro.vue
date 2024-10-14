@@ -144,24 +144,17 @@ h1 {
   animation-delay: 2s; /* Ritardo per la seconda immagine */
 }
 
-@media (min-width: 350px) {
+@media (max-width: 350px) {
     h1 {
-      font-weight: 100;
+     
       font-size: 2rem;
     }
 
     .intro-text {
-  display: flex;
+ 
   justify-content: space-evenly ;
-   align-items: start; /* Centra verticalmente */
-  /* text-align: center;*/
-  flex-direction: column;
-  height: 100vh;
-  width: 80vw;
-  padding: 20px 20px; /* Padding per gestire il testo su schermi più piccoli */
-  z-index: 1;
-  position: relative;
-  margin: 0 auto;
+
+  
 }
 
 .animated-image2{
@@ -174,5 +167,27 @@ h1 {
   top: 35px
 }
  }
+ @media (max-width: 425px) {
+    h1 {
+     
+      font-size: 2rem;
+    }
 
+    .intro-text {
+ 
+  justify-content: space-evenly ;
+
+  
+}
+
+.animated-image2{
+  max-width: 40%;
+  top: 350px;
+}
+
+.animated-image{
+  max-width: 40%;
+  top: 35px
+}
+ }
 </style>

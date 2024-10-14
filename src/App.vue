@@ -166,6 +166,7 @@ main {
   height: 80vh; /* Cambiato per far spazio al footer */
   overflow: hidden;
 }
+
 @media (min-width: 350px) {
   main {
  
@@ -174,6 +175,17 @@ main {
 
   
  }
+ @media (max-width: 991px) { /* Per schermi mobili */
+  main {
+    height: 80vh; /* Mantiene il comportamento attuale per i mobili */
+    overflow: auto; /* Permette lo scorrimento */
+  }
+}
+@media (min-width: 425px) {
+  main {
+  overflow:auto;
+}
+}
 
 html {
   scroll-behavior: smooth;
