@@ -51,7 +51,7 @@ export default {
 
 
 <template>
- <div id="ContactForm" v-motion-slide-visible-right>
+ <div id="ContactForm" >
     <div class="row mt-5 row_form">
     <div class="col-md-6">
       <form

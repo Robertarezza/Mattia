@@ -233,6 +233,12 @@ main {
 }
   
  }
+ @media (max-width: 768px) { /* Per schermi mobili */
+  main {
+    height: 80vh; /* Mantiene il comportamento attuale per i mobili */
+    overflow: auto; /* Permette lo scorrimento */
+  }
+}
  @media (max-width: 991px) { /* Per schermi mobili */
   main {
     height: 80vh; /* Mantiene il comportamento attuale per i mobili */
