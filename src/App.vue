@@ -5,7 +5,7 @@ import ContactForm from "./components/ContactForm.vue";
 import NavBar from "./components/NavBar.vue";
 import Intro from "./components/Intro.vue";
 import AppCardHome from "./components/AppCardHome.vue";
-import Loadingpage from './components/Loadingpage.vue'; // Importa la pagina di caricamento
+import LoadingPage from './components/LoadingPage.vue'; // Importa la pagina di caricamento
 
 export default {
   name: "App",
@@ -14,7 +14,7 @@ export default {
     NavBar,
     Intro,
     AppCardHome,
-    Loadingpage,
+    LoadingPage,
   },
 
   data() {
@@ -115,7 +115,7 @@ export default {
 <template>
   <div>
     <!-- Passa isVisible come prop al componente LoadingPage -->
-    <Loadingpage :isVisible="isVisible" />
+    <LoadingPage :isVisible="isVisible" />
 
   <div id="app"  v-if="!loading" class="background-container">
     <header>
