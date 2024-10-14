@@ -654,9 +654,9 @@ h6 {
 
 /* Media query per invertire l'ordine */
 @media (max-width: 768px) {
-  // .row {
-  //     flex-direction: column-reverse; /* Inverti la direzione del flex */
-  // }
+   .row {
+       flex-direction: column-reverse; /* Inverti la direzione del flex */
+ }
 
   .wrapper .facebook {
     background: #1877f2;
