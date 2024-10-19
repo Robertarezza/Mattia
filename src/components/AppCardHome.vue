@@ -54,7 +54,8 @@ export default {
 
 <template>
   <div class="d-flex row" id="AppCardHome" >
-    <div v-for="(item, index) in store.CardHome" :key="index" class="col-lg-3 col-md-5 col-xs-6 mb-3 d-flex" @click="openCard(item)">
+    <div v-for="(item, index) in store.CardHome" :key="index" class="col-lg-3 col-md-5 col-xs-6 mb-3 d-flex" @click="openCard(item)" style="align-items: center;
+    justify-content: center;">
       <div class="card p-3 rounded element-class">
         <i :class="[item.icon, 'animated-icon']" style="font-size: xxx-large"></i>
         <p class="mt-4">{{ item.title }}</p>
@@ -89,9 +90,11 @@ export default {
     cursor: pointer;
   }
 
-  .row {
-    padding-top: 180px;
+  #AppCardHome {
+    //padding-top: 110px;
     height: 80vh;
+    justify-content: center;
+    align-content: center;
   }
   
   // Animazione icon

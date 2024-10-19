@@ -61,7 +61,7 @@ export default {
   align-items: center; /* Centra verticalmente */
   text-align: center;
   flex-direction: column;
-  height: 100vh;
+  height: 80vh;
   width: 80vw;
   padding: 20px 20px; /* Padding per gestire il testo su schermi più piccoli */
   z-index: 1;

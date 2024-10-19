@@ -1,5 +1,5 @@
 <script>
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { useMotion } from '@vueuse/motion';
 import ContactForm from "./components/ContactForm.vue";
 import NavBar from "./components/NavBar.vue";
@@ -19,28 +19,25 @@ export default {
 
   data() {
     return {
-      introEl: ref(null),
+      introEl: ref(null), // Ref per l'elemento DOM
       appCardHomeEl: ref(null),
       contactFormEl: ref(null),
-      currentSection: 0, // Indica quale sezione è attualmente visibile
-      sections: ['introEl', 'appCardHomeEl', 'contactFormEl'], // Elenco delle sezioni
-
+      currentSection: 0,
+      sections: ['introEl', 'appCardHomeEl', 'contactFormEl'],
+      isSectionInView: false, // Nuovo stato per sapere se una sezione è visibile
       touchStartY: 0, // Per memorizzare la posizione iniziale del tocco
       touchThreshold: 0, // Soglia di scorrimento per cambiare sezione
-      isScrolling: false, // Stato per prevenire scroll multipli
-
       loading: true, // Stato di caricamento iniziale
       isVisible: true, // Stato di visibilità della loading page
+      isScrolling: false, // Stato per il controllo dello scrolling
     };
   },
- 
-  methods: {
-    // Metodo per gestire l'evento di scroll e cambiare sezione
-    handleScroll(event) {
-      if (this.isScrolling) return; // Se stiamo già scrollando, esci
 
-      this.isScrolling = true; // Imposta lo stato di scrolling
-      setTimeout(() => this.isScrolling = false, 1000); // Resetta dopo 1 secondo
+  methods: {
+    // Metodo per gestire l'evento di scroll
+    handleScroll(event) {
+      if (this.isScrolling ) return; // Non esegue lo scroll se stiamo già scrollando o la sezione non è in vista
+      this.isScrolling = true;
 
       // Verifica se lo scroll è verso il basso o verso l'alto
       if (event.deltaY > 0 && this.currentSection < this.sections.length - 1) {
@@ -56,7 +53,7 @@ export default {
     handleTouchStart(event) {
       this.touchStartY = event.touches[0].clientY; // Salva la posizione Y iniziale
     },
-    
+
     handleTouchMove(event) {
       if (this.isScrolling) return; // Se stiamo già scrollando, esci
 
@@ -66,11 +63,11 @@ export default {
       // Verifica se lo scorrimento è oltre la soglia e cambia sezione
       if (touchDiff > this.touchThreshold && this.currentSection < this.sections.length - 1) {
         this.isScrolling = true; // Imposta lo stato di scrolling
-        setTimeout(() => this.isScrolling = false, 1000); // Resetta dopo 1 secondo
+        setTimeout(() => (this.isScrolling = false), 1000); // Resetta dopo 1 secondo
         this.currentSection++;
       } else if (touchDiff < -this.touchThreshold && this.currentSection > 0) {
         this.isScrolling = true; // Imposta lo stato di scrolling
-        setTimeout(() => this.isScrolling = false, 1000); // Resetta dopo 1 secondo
+        setTimeout(() => (this.isScrolling = false), 1000); // Resetta dopo 1 secondo
         this.currentSection--;
       }
 
@@ -83,56 +80,84 @@ export default {
       this.activateAnimation(sectionIndex); // Attivare le animazioni per la nuova sezione
     },
 
-    // Metodo per attivare le animazioni per la sezione corrente
+    // Metodo per osservare le sezioni visibili
+    observeSections() {
+      const observerOptions = {
+        root: null,
+        threshold: 0.5, // 50% della sezione visibile
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.isSectionInView = true;
+          } else {
+            this.isSectionInView = false;
+          }
+        });
+      }, observerOptions);
+
+      // Usa nextTick per osservare le sezioni dopo che il DOM è stato renderizzato
+      nextTick(() => {
+        if (this.$refs.introEl) {
+          observer.observe(this.$refs.introEl);
+        }
+        if (this.$refs.appCardHomeEl) {
+          observer.observe(this.$refs.appCardHomeEl);
+        }
+        if (this.$refs.contactFormEl) {
+          observer.observe(this.$refs.contactFormEl);
+        }
+      });
+    },
+
+    // Metodo per attivare l'animazione della sezione
     activateAnimation(sectionIndex) {
+      this.isScrolling = false; // Sblocca lo scroll subito dopo aver iniziato l'animazione
+      const animationDuration = 600;
+
+      // Anima la sezione corrente
       if (sectionIndex === 0) {
-        // Attivare animazione per Intro
-        useMotion(this.introEl, {
+        useMotion(this.$refs.introEl, {
           initial: { opacity: 0, y: 100 },
-          animate: { opacity: 1, y: 0, duration: 600 },
+          animate: { opacity: 1, y: 0, duration: animationDuration },
         });
       } else if (sectionIndex === 1) {
-        // Attivare animazione per AppCardHome
-        useMotion(this.appCardHomeEl, {
-          initial: { opacity: 0, x: 100 }, // Slide in from right
-          animate: { opacity: 1, x: 0, duration: 600 },
+        useMotion(this.$refs.appCardHomeEl, {
+          initial: { opacity: 0, x: 100 },
+          animate: { opacity: 1, x: 0, duration: animationDuration },
         });
 
-        // Dissolvenza di Intro
-        useMotion(this.introEl, {
+        useMotion(this.$refs.introEl, {
           initial: { opacity: 1 },
-          animate: { opacity: 0, y: -100, duration: 600 },
+          animate: { opacity: 0, y: -100, duration: animationDuration },
         });
       } else if (sectionIndex === 2) {
-        // Attivare animazione per ContactForm
-        useMotion(this.contactFormEl, {
-          initial: { opacity: 0, x: -100 }, // Slide in from left
-          animate: { opacity: 1, x: 0, duration: 600 },
+        useMotion(this.$refs.contactFormEl, {
+          initial: { opacity: 0, x: -100 },
+          animate: { opacity: 1, x: 0, duration: animationDuration },
         });
 
-        // Dissolvenza di AppCardHome
-        useMotion(this.appCardHomeEl, {
+        useMotion(this.$refs.appCardHomeEl, {
           initial: { opacity: 1 },
-          animate: { opacity: 0, x: -100, duration: 600 },
+          animate: { opacity: 0, x: -100, duration: animationDuration },
         });
       }
     },
   },
 
   mounted() {
-
-    // Calcola la soglia dinamica in base all'altezza della finestra
-    this.touchThreshold = window.innerHeight * 0.2; // 20% dell'altezza della finestra
-    
-    // Aggiungi un listener per rilevare lo scroll
+    this.observeSections(); // Avvia l'osservazione delle sezioni
     window.addEventListener('wheel', this.handleScroll);
     window.addEventListener('touchstart', this.handleTouchStart);
     window.addEventListener('touchmove', this.handleTouchMove);
 
-    // Attivare l'animazione iniziale per Intro
+    // Inizialmente attiva l'animazione della prima sezione
     this.activateAnimation(0);
+  },
 
-    // Simula un tempo di caricamento
+  // Simula un tempo di caricamento
+  created() {
     setTimeout(() => {
       this.loading = false; // Nasconde il contenuto della loading page
       setTimeout(() => {
@@ -149,8 +174,6 @@ export default {
   },
 };
 </script>
-
-
 
 
 
@@ -242,32 +265,33 @@ main {
 
 @media (max-width: 350px) {
   main {
- 
+ max-height: 80vh;
   overflow:auto;
 }
 
 @media (max-width: 425px) {
   main {
   overflow:auto;
+  max-height: 80vh;
 }
 }
   
  }
  @media (max-width: 460px) { /* Per schermi mobili */
   main {
-    height: 80vh; /* Mantiene il comportamento attuale per i mobili */
+    max-height: 80vh; /* Mantiene il comportamento attuale per i mobili */
     overflow: auto; /* Permette lo scorrimento */
   }
 }
  @media (max-width: 768px) { /* Per schermi mobili */
   main {
-    height: 80vh; /* Mantiene il comportamento attuale per i mobili */
+    max-height: 80vh; /* Mantiene il comportamento attuale per i mobili */
     overflow: auto; /* Permette lo scorrimento */
   }
 }
  @media (max-width: 991px) { /* Per schermi mobili */
   main {
-    height: 80vh; /* Mantiene il comportamento attuale per i mobili */
+    max-height: 80vh; /* Mantiene il comportamento attuale per i mobili */
     overflow: auto; /* Permette lo scorrimento */
   }
 }

@@ -214,8 +214,10 @@ export default {
 #ContactForm {
 //   max-width: 600px;
   margin: 0 auto;
-  padding-top: 170px;
+ // padding-top: 110px;
   height: 80vh;
+  justify-content: center;
+    align-content: center;
 }
 
 h6 {
@@ -698,11 +700,7 @@ h6 {
 @media (min-width: 350px) {
    
 
-    #ContactForm {
-      padding-top: 100px;
-      margin-top: 50px;
-      margin-bottom: 20px
-    }
+    
 
     h6 {
       max-width: none;
