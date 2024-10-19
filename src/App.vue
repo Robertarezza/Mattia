@@ -22,101 +22,54 @@ export default {
       introEl: ref(null), // Ref per l'elemento DOM
       appCardHomeEl: ref(null),
       contactFormEl: ref(null),
-      currentSection: 0,
-      sections: ['introEl', 'appCardHomeEl', 'contactFormEl'],
-      isSectionInView: false, // Nuovo stato per sapere se una sezione è visibile
-      touchStartY: 0, // Per memorizzare la posizione iniziale del tocco
-      touchThreshold: 0, // Soglia di scorrimento per cambiare sezione
       loading: true, // Stato di caricamento iniziale
       isVisible: true, // Stato di visibilità della loading page
-      isScrolling: false, // Stato per il controllo dello scrolling
+
+      currentSection: 0, // Aggiungi questa riga per definire currentSection
     };
   },
 
   methods: {
-    // Metodo per gestire l'evento di scroll
-    handleScroll(event) {
-      if (this.isScrolling ) return; // Non esegue lo scroll se stiamo già scrollando o la sezione non è in vista
-      this.isScrolling = true;
-
-      // Verifica se lo scroll è verso il basso o verso l'alto
-      if (event.deltaY > 0 && this.currentSection < this.sections.length - 1) {
-        this.currentSection++;
-      } else if (event.deltaY < 0 && this.currentSection > 0) {
-        this.currentSection--;
-      }
-
-      this.activateAnimation(this.currentSection);
-    },
-
-    // Metodo per gestire il movimento del dito su dispositivi mobili
-    handleTouchStart(event) {
-      this.touchStartY = event.touches[0].clientY; // Salva la posizione Y iniziale
-    },
-
-    handleTouchMove(event) {
-      if (this.isScrolling) return; // Se stiamo già scrollando, esci
-
-      const touchEndY = event.touches[0].clientY; // Posizione Y finale
-      const touchDiff = this.touchStartY - touchEndY; // Calcola la differenza
-
-      // Verifica se lo scorrimento è oltre la soglia e cambia sezione
-      if (touchDiff > this.touchThreshold && this.currentSection < this.sections.length - 1) {
-        this.isScrolling = true; // Imposta lo stato di scrolling
-        setTimeout(() => (this.isScrolling = false), 1000); // Resetta dopo 1 secondo
-        this.currentSection++;
-      } else if (touchDiff < -this.touchThreshold && this.currentSection > 0) {
-        this.isScrolling = true; // Imposta lo stato di scrolling
-        setTimeout(() => (this.isScrolling = false), 1000); // Resetta dopo 1 secondo
-        this.currentSection--;
-      }
-
-      this.activateAnimation(this.currentSection);
-    },
-
-    // Metodo per gestire il cambio di sezione dalla navbar
     handleSectionChange(sectionIndex) {
-      this.currentSection = sectionIndex;
-      this.activateAnimation(sectionIndex); // Attivare le animazioni per la nuova sezione
-    },
-
-    // Metodo per osservare le sezioni visibili
+    console.log(`Changing to section: ${sectionIndex}`); // Aggiungi questo per il debug
+    this.currentSection = sectionIndex;
+    this.activateAnimation(sectionIndex);
+  },
+    
+    // Metodo per osservare le sezioni visibili e attivare le animazioni
     observeSections() {
-      const observerOptions = {
-        root: null,
-        threshold: 0.5, // 50% della sezione visibile
-      };
+  const observerOptions = {
+    root: null,
+    threshold: 0.5,
+  };
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            this.isSectionInView = true;
-          } else {
-            this.isSectionInView = false;
-          }
-        });
-      }, observerOptions);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const section = entry.target;
 
-      // Usa nextTick per osservare le sezioni dopo che il DOM è stato renderizzato
-      nextTick(() => {
-        if (this.$refs.introEl) {
-          observer.observe(this.$refs.introEl);
+        if (section === this.$refs.introEl) {
+          this.activateAnimation(0);
+        } else if (section === this.$refs.appCardHomeEl) {
+          this.activateAnimation(1);
+        } else if (section === this.$refs.contactFormEl) {
+          this.activateAnimation(2);
         }
-        if (this.$refs.appCardHomeEl) {
-          observer.observe(this.$refs.appCardHomeEl);
-        }
-        if (this.$refs.contactFormEl) {
-          observer.observe(this.$refs.contactFormEl);
-        }
-      });
-    },
+      }
+    });
+  }, observerOptions);
+
+  // Osserva le sezioni senza nextTick
+  if (this.$refs.introEl) observer.observe(this.$refs.introEl);
+  if (this.$refs.appCardHomeEl) observer.observe(this.$refs.appCardHomeEl);
+  if (this.$refs.contactFormEl) observer.observe(this.$refs.contactFormEl);
+},
 
     // Metodo per attivare l'animazione della sezione
     activateAnimation(sectionIndex) {
-      this.isScrolling = false; // Sblocca lo scroll subito dopo aver iniziato l'animazione
       const animationDuration = 600;
 
-      // Anima la sezione corrente
+      // Anima la sezione corrente in base all'indice
       if (sectionIndex === 0) {
         useMotion(this.$refs.introEl, {
           initial: { opacity: 0, y: 100 },
@@ -147,10 +100,7 @@ export default {
   },
 
   mounted() {
-    this.observeSections(); // Avvia l'osservazione delle sezioni
-    window.addEventListener('wheel', this.handleScroll);
-    window.addEventListener('touchstart', this.handleTouchStart);
-    window.addEventListener('touchmove', this.handleTouchMove);
+    this.observeSections(); // Avvia l'osservazione delle sezioni visibili
 
     // Inizialmente attiva l'animazione della prima sezione
     this.activateAnimation(0);
@@ -165,15 +115,9 @@ export default {
       }, 1000); // 1 secondo di transizione
     }, 2000); // Simula un caricamento di 2 secondi
   },
-
-  beforeUnmount() {
-    // Rimuovi il listener dello scroll quando il componente viene distrutto
-    window.removeEventListener('wheel', this.handleScroll);
-    window.removeEventListener('touchstart', this.handleTouchStart);
-    window.removeEventListener('touchmove', this.handleTouchMove);
-  },
 };
 </script>
+
 
 
 
@@ -191,25 +135,25 @@ export default {
     </header>
 
     <main>
-      <!-- Sezioni a schermo intero -->
-      <transition name="fade-slide" id="Intro">
-        <div v-if="currentSection === 0" ref="introEl" class="">
-          <Intro />
-        </div>
-      </transition>
+  <!-- Sezioni a schermo intero -->
+  <transition name="fade-slide">
+    <div v-if="currentSection === 0" ref="introEl">
+      <Intro />
+    </div>
+  </transition>
 
-      <transition name="fade-slide" id="AppCardHome">
-        <div v-if="currentSection === 1" ref="appCardHomeEl" class="">
-          <AppCardHome />
-        </div>
-      </transition>
+  <transition name="fade-slide">
+    <div v-if="currentSection === 1" ref="appCardHomeEl">
+      <AppCardHome />
+    </div>
+  </transition>
 
-      <transition name="fade-slide" id="ContactForm">
-        <div v-if="currentSection === 2" ref="contactFormEl" class="">
-          <ContactForm />
-        </div>
-      </transition>
-    </main>
+  <transition name="fade-slide">
+    <div v-if="currentSection === 2" ref="contactFormEl">
+      <ContactForm />
+    </div>
+  </transition>
+</main>
 
     <footer>
       <p>&copy; 2024 My Vue.js Site</p>

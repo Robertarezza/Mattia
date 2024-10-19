@@ -40,7 +40,7 @@ export default {
     <b-navbar toggleable="lg" type="dark" class="nav">
       <!-- Brand con il logo -->
       <b-navbar-brand @click.prevent="changeSection(0)">
-        <img src="../assets/img/logo2.png" alt="business logo" />
+        <img src="../assets/img/logo-5.png" alt="business logo" />
       </b-navbar-brand>
 
       <!-- Pulsante per il toggle del menu in versione mobile -->
@@ -76,18 +76,7 @@ export default {
   }
 }
 
-.nav {
-  backdrop-filter: blur(30px);
-  box-shadow: 0 0 30px rgba(227, 228, 237, 0.37);
-  background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
-  border-radius: 10px;
-  margin-top: 10px;
-  width: 95%;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: nowrap;
-  color: #fff;
-}
+
 
 @media (max-width: 992px) {
     .nav-2[data-v-c3ceb15a] {
@@ -104,7 +93,7 @@ export default {
   }
 
 img {
-  max-width: 30%;
+  max-width: 15%;
 }
 
 .nav-link {
@@ -147,5 +136,19 @@ img {
     right: 20px;
     width: 100%;
   }
+}
+
+
+.nav {
+  backdrop-filter: blur(30px);
+  box-shadow: 0 0 30px rgba(227, 228, 237, 0.37);
+  background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
+  border-radius: 10px;
+  margin-top: 10px;
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  color: #fff;
 }
 </style>
